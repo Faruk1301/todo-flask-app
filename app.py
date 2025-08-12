@@ -16,17 +16,21 @@ def index():
 
 @app.route("/add", methods=["POST"])
 def add():
-    data = request.json
-    conn = get_conn()
-    cur = conn.cursor()
-    cur.execute(
-        "INSERT INTO Employees (FirstName, LastName, Email) VALUES (?, ?, ?)",
-        data["first"], data["last"], data["email"]
-    )
-    conn.commit()
-    cur.close()
-    conn.close()
-    return jsonify({"status": "success"}), 201
+    try:
+        data = request.json
+        conn = get_conn()
+        cur = conn.cursor()
+        cur.execute(
+            "INSERT INTO Employees (FirstName, LastName, Email) VALUES (?, ?, ?)",
+            data["first"], data["last"], data["email"]
+        )
+        conn.commit()
+        cur.close()
+        conn.close()
+        return jsonify({"status": "success"}), 201
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
+
