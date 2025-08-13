@@ -1,2 +1,5 @@
-Flask
-pyodbc
+DB_SERVER=your-server.database.windows.net
+DB_NAME=employee-db
+DB_USER=your-username
+DB_PASSWORD=your-password
+

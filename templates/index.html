@@ -1,0 +1,27 @@
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Employee Search</title>
+</head>
+<body>
+  <h2>Search Employee by ID</h2>
+  <form method="post">
+    <input type="number" name="emp_id" required>
+    <button type="submit">Search</button>
+  </form>
+
+  {% if employee %}
+    <h3>Employee Details:</h3>
+    <ul>
+      <li>Name: {{ employee.name }}</li>
+      <li>Email: {{ employee.email }}</li>
+      <li>Phone: {{ employee.phone }}</li>
+      <li>Position: {{ employee.position }}</li>
+      <li>Department: {{ employee.department }}</li>
+    </ul>
+  {% elif employee is not none %}
+    <p>No employee found with that ID.</p>
+  {% endif %}
+</body>
+</html>
