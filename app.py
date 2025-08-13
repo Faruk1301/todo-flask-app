@@ -1,15 +1,20 @@
-python
 from flask import Flask, render_template, request
 import pyodbc
 import os
 from dotenv import load_dotenv
 
+# Load .env variables
 load_dotenv()
 
-app = Flask(_name_)
+app = Flask(__name__)
 
+# Database connection
 conn = pyodbc.connect(
-    f'DRIVER={{ODBC Driver 17 for SQL Server}};SERVER={os.getenv("DB_SERVER")};DATABASE={os.getenv("DB_NAME")};UID={os.getenv("DB_USER")};PWD={os.getenv("DB_PASSWORD")}'
+    f'DRIVER={{ODBC Driver 17 for SQL Server}};'
+    f'SERVER={os.getenv("DB_SERVER")};'
+    f'DATABASE={os.getenv("DB_NAME")};'
+    f'UID={os.getenv("DB_USER")};'
+    f'PWD={os.getenv("DB_PASSWORD")}'
 )
 
 @app.route('/', methods=['GET', 'POST'])
@@ -22,15 +27,15 @@ def index():
         row = cursor.fetchone()
         if row:
             employee = {
-                'id': row.id,
-                'name': row.name,
-                'email': row.email,
-                'phone': row.phone,
-                'position': row.position,
-                'department': row.department
+                'id': row[0],
+                'name': row[1],
+                'email': row[2],
+                'phone': row[3],
+                'position': row[4],
+                'department': row[5]
             }
     return render_template('index.html', employee=employee)
 
-if _name_ == '_main_':
+if __name__ == "__main__":
     app.run(debug=True)
 
