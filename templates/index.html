@@ -121,6 +121,14 @@
             color: red;
             text-align: center;
             font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .success {
+            color: green;
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 15px;
         }
     </style>
 </head>
@@ -153,8 +161,13 @@
             <button type="submit">Add Employee</button>
         </form>
 
+        <!-- Display messages -->
         {% if error %}
             <div class="error">{{ error }}</div>
+        {% endif %}
+
+        {% if success %}
+            <div class="success">{{ success }}</div>
         {% endif %}
 
         {% if employee %}
