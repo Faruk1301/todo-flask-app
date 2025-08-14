@@ -28,7 +28,10 @@ def get_db_connection():
 def index():
     employee = None
     error = None
-    if request.method == 'POST':
+    success = None
+
+    # SEARCH functionality
+    if request.method == 'POST' and 'emp_id' in request.form:
         try:
             emp_id = int(request.form['emp_id'])
             conn = get_db_connection()
@@ -55,11 +58,13 @@ def index():
         except Exception as e:
             error = f"Error: {e}"
 
-    return render_template('index.html', employee=employee, error=error)
+    return render_template('index.html', employee=employee, error=error, success=success)
 
-# New route: Add a new employee
 @app.route('/add-employee', methods=['POST'])
 def add_employee():
+    employee = None
+    error = None
+    success = None
     try:
         emp_id = int(request.form['id'])
         name = request.form['name']
@@ -71,17 +76,24 @@ def add_employee():
         conn = get_db_connection()
         if conn:
             cursor = conn.cursor()
-            cursor.execute("""
-                INSERT INTO employees (id, name, email, phone, position, department)
-                VALUES (?, ?, ?, ?, ?, ?)
-            """, emp_id, name, email, phone, position, department)
-            conn.commit()
+            # Check if employee ID already exists
+            cursor.execute("SELECT * FROM employees WHERE id = ?", emp_id)
+            if cursor.fetchone():
+                error = f"Employee ID {emp_id} already exists."
+            else:
+                cursor.execute("""
+                    INSERT INTO employees (id, name, email, phone, position, department)
+                    VALUES (?, ?, ?, ?, ?, ?)
+                """, emp_id, name, email, phone, position, department)
+                conn.commit()
+                success = f"Employee {name} added successfully!"
             conn.close()
-            return f"Employee {name} added successfully!"
         else:
-            return "Database connection failed."
+            error = "Database connection failed."
     except Exception as e:
-        return f"Error: {e}"
+        error = f"Error: {e}"
+
+    return render_template('index.html', employee=employee, error=error, success=success)
 
 @app.route('/test-db')
 def test_db():
@@ -103,4 +115,5 @@ def health():
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000)
+
 
