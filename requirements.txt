@@ -1,5 +1,6 @@
-Flask
-python-dotenv
-pyodbc
+Flask==2.3.2
+gunicorn==21.2.0
+pyodbc==4.0.39   # if using Azure SQL
+python-dotenv==1.0.0  # if using .env variables
 
 
