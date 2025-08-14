@@ -1,27 +1,27 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Employee Search</title>
+    <title>Employee Search</title>
 </head>
 <body>
-  <h2>Search Employee by ID</h2>
-  <form method="post">
-    <input type="number" name="emp_id" required>
-    <button type="submit">Search</button>
-  </form>
+    <h2>Search Employee by ID</h2>
+    <form method="post">
+        <input type="number" name="emp_id" required>
+        <button type="submit">Search</button>
+    </form>
 
-  {% if employee %}
-    <h3>Employee Details:</h3>
-    <ul>
-      <li><strong>ID:</strong> {{ employee.id }}</li>
-      <li><strong>Name:</strong> {{ employee.name }}</li>
-      <li><strong>Email:</strong> {{ employee.email }}</li>
-      <li><strong>Phone:</strong> {{ employee.phone }}</li>
-      <li><strong>Position:</strong> {{ employee.position }}</li>
-      <li><strong>Department:</strong> {{ employee.department }}</li>
-    </ul>
-  {% elif employee is not none %}
-    <p>No employee found with this ID.</p>
-  {% endif %}
+    {% if employee %}
+        <h3>Employee Details:</h3>
+        <ul>
+            <li>ID: {{ employee.id }}</li>
+            <li>Name: {{ employee.name }}</li>
+            <li>Email: {{ employee.email }}</li>
+            <li>Phone: {{ employee.phone }}</li>
+            <li>Position: {{ employee.position }}</li>
+            <li>Department: {{ employee.department }}</li>
+        </ul>
+    {% elif error %}
+        <p style="color:red">{{ error }}</p>
+    {% endif %}
 </body>
 </html>
