@@ -1,20 +1,17 @@
 from flask import Flask, render_template, request
 import pyodbc
 import os
-from dotenv import load_dotenv
-
-# Load .env variables
-load_dotenv()
 
 app = Flask(__name__)
 
-# Database connection
+# Database connection using Azure App Service environment variables
 conn = pyodbc.connect(
     f'DRIVER={{ODBC Driver 17 for SQL Server}};'
-    f'SERVER={os.getenv("DB_SERVER")};'
-    f'DATABASE={os.getenv("DB_NAME")};'
-    f'UID={os.getenv("DB_USER")};'
-    f'PWD={os.getenv("DB_PASSWORD")}'
+    f'SERVER={os.environ.get("DB_SERVER")};'
+    f'DATABASE={os.environ.get("DB_NAME")};'
+    f'UID={os.environ.get("DB_USER")};'
+    f'PWD={os.environ.get("DB_PASSWORD")}',
+    autocommit=True
 )
 
 @app.route('/', methods=['GET', 'POST'])
@@ -37,5 +34,7 @@ def index():
     return render_template('index.html', employee=employee)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    # Azure provides the PORT environment variable for the app
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port, debug=True)
 
