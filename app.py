@@ -1,20 +1,24 @@
 from flask import Flask, render_template, request
 import pyodbc
-import os
 
 app = Flask(__name__)
+
+# Full Azure SQL connection string
+CONN_STR = (
+    "Driver={ODBC Driver 17 for SQL Server};"
+    "Server=tcp:toserver.database.windows.net,1433;"
+    "Database=employee-db;"
+    "Uid=azureuser;"
+    "Pwd=aA@&1301278901;"
+    "Encrypt=yes;"
+    "TrustServerCertificate=no;"
+    "Connection Timeout=30;"
+)
 
 # Helper function to get DB connection safely
 def get_db_connection():
     try:
-        conn = pyodbc.connect(
-            f'DRIVER={{ODBC Driver 17 for SQL Server}};'
-            f'SERVER={os.environ.get("DB_SERVER")};'
-            f'DATABASE={os.environ.get("DB_NAME")};'
-            f'UID={os.environ.get("DB_USER")};'
-            f'PWD={os.environ.get("DB_PASSWORD")}',
-            autocommit=True
-        )
+        conn = pyodbc.connect(CONN_STR, autocommit=True)
         return conn
     except Exception as e:
         print("Database connection failed:", e)
@@ -26,7 +30,7 @@ def index():
     error = None
     if request.method == 'POST':
         try:
-            emp_id = int(request.form['emp_id'])  # ensure integer for SQL query
+            emp_id = int(request.form['emp_id'])
             conn = get_db_connection()
             if conn:
                 cursor = conn.cursor()
@@ -53,19 +57,23 @@ def index():
 
     return render_template('index.html', employee=employee, error=error)
 
-# Route to test database connectivity
 @app.route('/test-db')
 def test_db():
+    conn = get_db_connection()
+    if not conn:
+        return "Database connection failed! Check connection string and firewall."
     try:
-        conn = get_db_connection()
         cursor = conn.cursor()
         cursor.execute("SELECT TOP 5 * FROM employees")
         rows = cursor.fetchall()
+        conn.close()
         return f"Rows fetched: {len(rows)}"
     except Exception as e:
-        return f"Database connection failed: {e}"
+        return f"Database query failed: {e}"
 
-# Health check route
 @app.route('/health')
 def health():
     return "App is running!"
+
+if __name__ == "__main__":
+    app.run(host='0.0.0.0', port=5000)
