@@ -57,6 +57,32 @@ def index():
 
     return render_template('index.html', employee=employee, error=error)
 
+# New route: Add a new employee
+@app.route('/add-employee', methods=['POST'])
+def add_employee():
+    try:
+        emp_id = int(request.form['id'])
+        name = request.form['name']
+        email = request.form['email']
+        phone = request.form['phone']
+        position = request.form['position']
+        department = request.form['department']
+
+        conn = get_db_connection()
+        if conn:
+            cursor = conn.cursor()
+            cursor.execute("""
+                INSERT INTO employees (id, name, email, phone, position, department)
+                VALUES (?, ?, ?, ?, ?, ?)
+            """, emp_id, name, email, phone, position, department)
+            conn.commit()
+            conn.close()
+            return f"Employee {name} added successfully!"
+        else:
+            return "Database connection failed."
+    except Exception as e:
+        return f"Error: {e}"
+
 @app.route('/test-db')
 def test_db():
     conn = get_db_connection()
@@ -77,3 +103,4 @@ def health():
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000)
+
