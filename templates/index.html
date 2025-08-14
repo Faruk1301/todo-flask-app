@@ -60,24 +60,33 @@
             display: flex;
             justify-content: center;
             margin-bottom: 20px;
+            flex-wrap: wrap;
         }
 
-        input[type="number"] {
+        input, select {
             padding: 10px;
             font-size: 16px;
-            width: 60%;
+            margin: 5px;
             border: 1px solid #ccc;
-            border-radius: 5px 0 0 5px;
+            border-radius: 5px;
             outline: none;
         }
 
+        input[type="number"] {
+            width: 100px;
+        }
+
+        input[type="text"], input[type="email"] {
+            width: 150px;
+        }
+
         button[type="submit"] {
-            padding: 8px 15px;  /* smaller button */
-            font-size: 14px;    /* smaller text */
+            padding: 8px 15px;
+            font-size: 14px;
             border: none;
             background-color: #0078d7;
             color: white;
-            border-radius: 0 5px 5px 0;
+            border-radius: 5px;
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
@@ -125,11 +134,23 @@
     </nav>
 
     <div class="container">
+        <!-- SEARCH FORM -->
         <h2>Search Employee by ID</h2>
-
-        <form method="post">
+        <form method="post" action="/">
             <input type="number" name="emp_id" placeholder="Enter Employee ID" required>
             <button type="submit">Search</button>
+        </form>
+
+        <!-- INSERT FORM -->
+        <h2>Add New Employee</h2>
+        <form method="post" action="/add-employee">
+            <input type="number" name="id" placeholder="ID" required>
+            <input type="text" name="name" placeholder="Name" required>
+            <input type="email" name="email" placeholder="Email" required>
+            <input type="text" name="phone" placeholder="Phone" required>
+            <input type="text" name="position" placeholder="Position" required>
+            <input type="text" name="department" placeholder="Department" required>
+            <button type="submit">Add Employee</button>
         </form>
 
         {% if error %}
